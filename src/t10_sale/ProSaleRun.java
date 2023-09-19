@@ -10,7 +10,7 @@ public class ProSaleRun {
 		boolean run = true;
 		
 		while(run) {
-			System.out.println("\n\t*** 작업 선택 ***");
+			System.out.println("\n\t*** 작업 선택(메뉴 선택) ***");
 			System.out.println("=".repeat(40));
 			System.out.print("1:상품관리 2:판매관리 0:종료");
 			int no = scanner.nextInt();

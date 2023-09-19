@@ -53,7 +53,7 @@ public class SaleService {
 	private void saleList() {	//전체 판매 내역
 		ArrayList<SaleVO> vos = dao.getSaleList();
 		
-		System.out.println("\n *** 판매 상품 리스트(전체) ***");
+		System.out.println("\n *** 판매 상품 리스트(전체) - 연습용 ***");
 		System.out.println("=".repeat(40));
 		System.out.println("상품번호\t상품명\t판매수량\t판매가격\t판매일자");
 		System.out.println("-".repeat(40));
