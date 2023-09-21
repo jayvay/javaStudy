@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+@SuppressWarnings("serial")
 public class T2_WindowClose extends Frame implements WindowListener {
 	
 	public T2_WindowClose() {
@@ -11,7 +12,7 @@ public class T2_WindowClose extends Frame implements WindowListener {
 		setSize(400, 300);
 		setVisible(true);	
 		
-		addWindowListener(this); 	//감시자
+		addWindowListener(this); 	//감시자 //감시자가 있어야 'x 누르면 창 닫아짐'이 실행됨
 	}
 	
 	public static void main(String[] args) {

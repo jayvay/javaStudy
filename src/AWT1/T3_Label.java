@@ -5,19 +5,20 @@ import java.awt.Label;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+@SuppressWarnings("serial")
 public class T3_Label extends Frame implements WindowListener {
 	
 	public T3_Label() {
-		super("프레임 테스트");		//디자인
+		//디자인
+		super("프레임 테스트");		
 		setSize(400, 300);
-		Label lbl = new Label("회 원 가 입");
-		
+		Label lbl = new Label("회 원 가 입");	//창에 내용 입력
 		this.add(lbl);
 		
 		setVisible(true);	
-		
 		/* ----------------------------------- */
-		addWindowListener(this); 	//감시자
+		//감시자
+		addWindowListener(this); 	
 	}
 	
 	public static void main(String[] args) {

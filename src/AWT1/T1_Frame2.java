@@ -5,9 +5,9 @@ import java.awt.Frame;
 public class T1_Frame2 extends Frame {
 	
 	public T1_Frame2() {	//생성하면서 뷰 디자인
-		super("프레임 테스트");	
-		setSize(400, 300);
-		setVisible(true);
+		super("프레임 테스트");	//제목
+		setSize(400, 300);		//창 사이즈
+		setVisible(true);			//보이게 할거니? true
 	}
 	
 	public static void main(String[] args) {
