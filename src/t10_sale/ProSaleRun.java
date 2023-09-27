@@ -21,7 +21,7 @@ public class ProSaleRun {
 					pService.getProductMenu();
 					break;
 				case 2:
-					SaleService sService = new SaleService();
+					SaleService2 sService = new SaleService2();
 					sService.getSaleMenu();
 					break;
 				default:

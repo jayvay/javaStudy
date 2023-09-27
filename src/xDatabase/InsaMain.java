@@ -9,10 +9,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.ActionEvent;
 
 public class InsaMain extends JFrame {
@@ -62,7 +67,10 @@ public class InsaMain extends JFrame {
 		
 		JLabel lblMain = new JLabel("");
 		lblMain.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMain.setIcon(new ImageIcon(InsaMain.class.getResource("/xDatabase/images/main.jpg")));
+//		lblMain.setIcon(new ImageIcon(InsaMain.class.getResource("/xDatabase/images/main.jpg")));
+		ImageIcon imgMain = new ImageIcon(getClass().getResource("./images/main.jpg"));
+		imgMain =	imageSetSize(imgMain, 600, 400); 
+		lblMain.setIcon(imgMain);
 		lblMain.setBounds(0, 0, 784, 364);
 		pn2.add(lblMain);
 		
@@ -89,12 +97,22 @@ public class InsaMain extends JFrame {
 
 		/*-------------------------------------------*/
 		
+		//사원등록 버튼을 마우스로 클릭했을 때 수행
 		btnInput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new InsaInput();
 			}
 		});
-	
+		
+		//사원등록 버튼을 키보드 ENTER키 누를 때 수행
+		btnInput.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) new InsaInput();
+			}
+		});
+		
+		//개별조회
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = JOptionPane.showInputDialog("검색할 성명을 입력하세요");
@@ -107,13 +125,29 @@ public class InsaMain extends JFrame {
 		
 		btnList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				new InsaList();
 			}
 		});
 		
-		btnExit.addActionListener(new ActionListener() {
+		btnExit.addActionListener(new ActionListener() {	//종료버튼을 마우스로 클릭했을 때 수행 처리
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
 			}
 		});
+		
+		btnExit.addKeyListener(new KeyAdapter() {	//종료버튼을 키보드로(Enter키 눌렀을 때) 수행 처리
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) System.exit(0);
+			}
+		});
+		
+	}
+	
+	ImageIcon imageSetSize (ImageIcon icon, int i, int j) {	//이미지 크기 조절
+		Image ximg = icon.getImage();
+		Image yimg = ximg.getScaledInstance(i , j, Image.SCALE_SMOOTH);
+		ImageIcon xyimg = new ImageIcon(yimg);
+		return xyimg;
 	}
 }

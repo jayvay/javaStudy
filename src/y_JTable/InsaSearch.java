@@ -1,10 +1,9 @@
-package xDatabase;
+package y_JTable;
 
-import java.awt.EventQueue;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -17,7 +16,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import java.awt.Color;
+
+import xDatabase.InsaDAO;
+import xDatabase.InsaVO;
 
 @SuppressWarnings("serial")
 public class InsaSearch extends JFrame {

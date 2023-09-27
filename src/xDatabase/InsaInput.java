@@ -4,6 +4,9 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
@@ -230,7 +233,7 @@ public class InsaInput extends JFrame {
 						else {
 							//정상적으로 자료가 입력 되었다면 vo에 담는다.
 							vo.setName(name);
-							vo.setAge(Integer.parseInt(age));	//나이가 지금 int인데 
+							vo.setAge(Integer.parseInt(age));	//age 타입은 원래 int인데 텍스트필드에 입력은 문자로 했기 때문에 int로 바꿔준다
 							vo.setGender(gender);
 							vo.setIpsail(ipsail);
 							
@@ -281,5 +284,14 @@ public class InsaInput extends JFrame {
 				dispose();
 			}
 		});
+		
+		//회원 성명 입력 후 Enter키 누르면 커서를 나이 입력창으로 보내기
+		txtName.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) txtAge.requestFocus();
+			}
+		});
+		
 	}
 }

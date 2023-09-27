@@ -6,57 +6,71 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class SaleDAO extends ParentDAO {
-	
-//	Connection conn = null;	//부모가 conn 객체 갖고 있음
+
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	
 	String sql = "";
-	
-	ProductVO pVO = null;	//vo 써먹든 안써먹든 일단 선언은 해놓아요
+	ProductVO pVO = null;
 	SaleVO sVO = null;
 	
-//	public SaleDAO() {	//싱글톤이 아니면 발생하는 문제
-//		String url = "jdbc:mysql://localhost:3306/javaProject";
-//		String user = "atom";
-//		String password = "1234";
-//			
-//		try {
-//			Class.forName("com.mysql.jdbc.Driver");
-//			conn = DriverManager.getConnection(url, user, password);
-//
-//		} catch (ClassNotFoundException e) {
-//			System.out.println("드라이버 검색 실패" + e.getMessage());
-//		} catch (SQLException e) {
-//			System.out.println("데이터베이스 연동 실패" + e.getMessage());
-//		}
-//	}
+	int res = 0;
+	String pName = "";
+	String pDate = "";
+	String total = "";
 	
+    public void connClose() {
+        try {
+            conn.close();
+        } catch (Exception e) {}
+    }
+ 
+    public void pstmtClose() {
+        try {
+            if(pstmt != null) pstmt.close();
+        } catch (Exception e) {}
+    }
+    
+    public void rsClose() {
+        try {
+            if(rs != null) rs.close();
+        } catch (Exception e) {}
+        pstmtClose();
+    }
 
-	public void pstmtClose() {
-		try {
-			if(pstmt != null) pstmt.close();
-		} catch (SQLException e) {}
-	}
-	
-	public void rsClose() {
-		try {
-			if(rs != null) rs.close();
-		} catch (SQLException e) {	//??????????????????????????
-			pstmtClose();
-		}
-	}
+    ////////////////////////////////////////////////
 
-	public int setSaleInput(SaleVO sVo) {	//판매 상품 등록 처리
-		int res = 0;
-		
-		try {
-			sql = "insert into sale values (default,?,?,?)";
+    public ProductVO getNameSearch(String pName) {
+    	pVO = new ProductVO();
+    	try {
+			sql = "select * from product where pName = ?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, sVo.getpName());
-			pstmt.setInt(2, sVo.getEa());
-			pstmt.setString(3, sVo.getpDate());
+			pstmt.setString(1, pName);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				pVO.setIdx(rs.getInt("idx"));
+				pVO.setpName(rs.getString("pName"));
+				pVO.setPrice(rs.getInt("price"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			rsClose();
+		}
+		return pVO;
+	}
+
+	public int setSaleInput(SaleVO sVO) {
+		res = 0;
+		try {
+			sql = "insert into sale values (default, ? , ? , ?) ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, sVO.getpName());
+			pstmt.setInt(2, sVO.getEa());
+			pstmt.setString(3, sVO.getpDate());
 			res = pstmt.executeUpdate();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -65,72 +79,26 @@ public class SaleDAO extends ParentDAO {
 		return res;
 	}
 
-	public ProductVO getNameSearch(String pName) {	//등록된 상품(판매 가능 상품) 검색
-		ProductVO vo = new ProductVO();
-		
-		try {
-			sql = "select * from product where pName = ?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, pName);
-			rs = pstmt.executeQuery();
-			
-			if(rs.next())	{
-				vo.setIdx(rs.getInt("idx"));
-				vo.setpName(pName);
-				vo.setPrice(rs.getInt("price"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			rsClose();
-		}
-		return vo;
-	}
-
-	public ArrayList<SaleVO> getSaleNameSearch(String pName) {	//판매된 상품 검색
+	public ArrayList<SaleVO> getSaleProcess(String item, String flag) {
 		ArrayList<SaleVO> vos = new ArrayList<SaleVO>();
-		ResultSet rs2 = null;
-		
 		try {
-			sql = "select * from sale where pName = ?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, pName);
-			rs2 = pstmt.executeQuery();
-			
-			while(rs2.next())	{
-				sVO = new SaleVO();
-				sVO.setIdx(rs2.getInt("idx"));
-				sVO.setpName(pName);
-				sVO.setEa(rs2.getInt("ea"));
-				sVO.setpDate(rs2.getString("pDate"));
-				sVO.setSalePrice(getNameSearch(pName).getPrice());
-				vos.add(sVO);
+			if(item.equals("total")) {
+				sql = "select * from sale order by idx desc";
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			rsClose();
-		}
-		return vos;
-	}
-
-	public ArrayList<SaleVO> getSaleDateSearch(String pDate) {	//판매 일자별 검색
-		ArrayList<SaleVO> vos = new ArrayList<SaleVO>();
-		ResultSet rs2 = null;
-		
-		try {
-			sql = "select * from sale where pDate = ?";
+			else if(item.equals("pNameOrPDate")){
+				if(flag.equals("n")) sql = "select * from sale where pName = ?";
+				else if(flag.equals("d")) sql = "select * from sale where pDate = ?";
+			}
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, pDate);
-			rs2 = pstmt.executeQuery();
+			rs = pstmt.executeQuery();
 			
-			while(rs2.next())	{
+			while(rs.next()) {
 				sVO = new SaleVO();
-				sVO.setIdx(rs2.getInt("idx"));
-				sVO.setpName(rs2.getString("pName"));
-				sVO.setEa(rs2.getInt("ea"));
-				sVO.setpDate(rs2.getString("pDate"));
-				sVO.setSalePrice(getNameSearch(sVO.getpName()).getPrice());
+				sVO.setIdx(rs.getInt("idx"));
+				sVO.setpName(rs.getString("pName"));
+				sVO.setEa(rs.getInt("ea"));
+				sVO.setpDate(rs.getString("pDate"));
 				vos.add(sVO);
 			}
 		} catch (SQLException e) {
@@ -141,29 +109,21 @@ public class SaleDAO extends ParentDAO {
 		return vos;
 	}
 
-	public ArrayList<SaleVO> getSaleList() { //전체 판매 내역 조회
-		ArrayList<SaleVO> vos = new ArrayList<SaleVO>();
-		ResultSet rs2 = null;
-		
+	public int setDelete(String pName, String pDate) {
+		res = 0;
 		try {
-			sql = "select * from sale";
+			sql = "delete from sale where pName = ? and pDate = ?";
 			pstmt = conn.prepareStatement(sql);
-			rs2 = pstmt.executeQuery();
+			pstmt.setString(1, pName);
+			pstmt.setString(2, pDate);
+			res = pstmt.executeUpdate();
 			
-			while(rs2.next())	{
-				sVO = new SaleVO();
-				sVO.setIdx(rs2.getInt("idx"));
-				sVO.setpName(rs2.getString("pName"));
-				sVO.setEa(rs2.getInt("ea"));
-				sVO.setpDate(rs2.getString("pDate"));
-				sVO.setSalePrice(getNameSearch(sVO.getpName()).getPrice());
-				vos.add(sVO);
-			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			rsClose();
+			pstmtClose();
 		}
-		return vos;
+		
+		return res;
 	}
 }
